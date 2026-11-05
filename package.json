@@ -1,0 +1,27 @@
+{
+  "name": "college-hood",
+  "version": "1.0.0",
+  "description": "College Hood \u2014 a browser fighting game with custom characters and online multiplayer",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "server": "node server/roomServer.js",
+    "start": "vite",
+    "test": "node --import ./tests/register.mjs --test tests/*.test.ts tests/*.test.mjs",
+    "test:browser": "node tests/browser-smoke.mjs",
+    "test:preview": "node tests/browser-smoke.mjs --preview"
+  },
+  "dependencies": {
+    "three": "^0.170.0",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@types/three": "^0.170.0",
+    "@types/ws": "^8.5.13",
+    "typescript": "^5.6.3",
+    "vite": "^6.0.1"
+  }
+}

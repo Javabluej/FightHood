@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="theme-color" content="#120a06" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="apple-mobile-web-app-title" content="College Hood" />
+    <title>College Hood — Political Satire Fighter</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Teko:wght@500;700&display=swap" rel="stylesheet" />
+    
+    
+    
+    
+      <script type="module" src="/src/main.ts"></script>
+  </head>
+  <body>
+    <canvas id="game"></canvas>
+
+    <div id="vignette"></div>
+    <div id="flash"></div>
+    <div id="popups"></div>
+
+    <!-- In-fight HUD -->
+    <div id="hud" class="hidden">
+      <div class="top">
+        <div class="side left">
+          <img class="portrait" alt="" />
+          <div class="bar-wrap">
+            <div class="name"></div>
+            <div class="hp"><div class="hp-trail"></div><div class="hp-fill"></div></div>
+            <div class="wins"><span class="win"></span><span class="win"></span></div>
+          </div>
+        </div>
+        <div id="timer">60</div>
+        <div class="side right">
+          <img class="portrait" alt="" />
+          <div class="bar-wrap">
+            <div class="name"></div>
+            <div class="hp"><div class="hp-trail"></div><div class="hp-fill"></div></div>
+            <div class="wins"><span class="win"></span><span class="win"></span></div>
+          </div>
+        </div>
+      </div>
+      <div class="combo left"></div>
+      <div class="combo right"></div>
+      <div class="bottom">
+        <div class="meter left"><div class="meter-label">SHAKTI</div><div class="meter-bar"><div class="meter-fill"></div></div></div>
+        <div class="meter right"><div class="meter-label">SHAKTI</div><div class="meter-bar"><div class="meter-fill"></div></div></div>
+      </div>
+      <button id="pause-btn" title="Pause (Esc)">II</button>
+      <div id="newsdesk">
+        <div class="desk">
+          <div class="live">● LIVE</div>
+          <div class="anchor godi"><img alt="" /><div class="meta"><span class="channel"></span><span class="who"></span><span class="line"></span></div></div>
+          <div class="vs-mini">VS</div>
+          <div class="anchor troll"><img alt="" /><div class="meta"><span class="channel"></span><span class="who"></span><span class="line"></span></div></div>
+        </div>
+        <div class="ticker"><span class="tag">BREAKING</span><div class="ticker-window"><div class="ticker-track"></div></div></div>
+      </div>
+    </div>
+    <div id="announce"></div>
+
+    <div id="peace-meter"><b>☮</b><span>SHANTI</span><div class="track"><i></i></div></div>
+
+    <div id="cinema">
+      <div class="cine-bar top"></div>
+      <div class="cine-bar bottom"></div>
+      <p id="cine-caption"></p>
+      <div id="cine-title"><small></small><h1></h1></div>
+      <button id="cine-skip" type="button">SKIP ›</button>
+    </div>
+    <div id="super-banner"></div>
+
+    <div id="touch">
+      <div class="stick" aria-label="Move"><div class="ring"></div><div class="knob"></div></div>
+      <div class="actions">
+        <button data-touch="grab" class="grab">GRAB</button>
+        <button data-touch="super" class="super">SUPER</button>
+        <button data-touch="punch" class="punch">PUNCH</button>
+        <button data-touch="kick" class="kick">KICK</button>
+      </div>
+    </div>
+
+    <div id="rotate" aria-live="polite">
+      <div class="phone-icon"></div>
+      <h2>ROTATE YOUR PHONE</h2>
+      <p>College Hood is played in landscape.</p>
+    </div>
+
+    <!-- iPhone (Safari / Chrome): toolbars only collapse when the page scrolls. -->
+    <div id="ios-swipe" class="hidden" aria-live="polite">
+      <div class="swipe-hand"></div>
+      <h2>SWIPE UP FOR FULL SCREEN</h2>
+      <p>Tip: Share → <b>Add to Home Screen</b> to always play full screen.</p>
+      <button type="button" class="swipe-skip">Play with toolbar</button>
+    </div>
+
+    <div id="loading" class="screen"><div class="logo">COLLEGE <span>HOOD</span></div><p>Loading fighters…</p><div class="load-bar"><i id="load-fill"></i></div></div>
+
+    <div id="title" class="screen hidden">
+      <div class="logo">COLLEGE <span>HOOD</span></div>
+      <div class="tag">THE COLLEGE SHOWDOWN</div>
+      <div class="press">PRESS ENTER / CLICK TO START</div>
+      <div class="press-touch">TAP TO START</div>
+      <div class="disclaimer">Political satire and parody. Not connected to or endorsed by any person or party.</div>
+    </div>
+
+    <!-- Online: host or join a room -->
+    <div id="online" class="screen hidden">
+      <h1>PLAY WITH A FRIEND</h1>
+      <div id="on-home" class="on-panel">
+        <button id="on-host" class="big" type="button">HOST A ROOM</button>
+        <div class="on-or">or enter your friend's room code</div>
+        <form id="on-join-form" class="on-join">
+          <input id="on-code" maxlength="6" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="CODE" aria-label="Room code" />
+          <button class="big" type="submit">JOIN</button>
+        </form>
+      </div>
+      <div id="on-hosting" class="on-panel hidden">
+        <div class="on-label">ROOM CODE</div>
+        <div id="on-room-code" class="on-code">····</div>
+        <div class="on-share">
+          <button id="on-wa" type="button">Share on WhatsApp</button>
+          <button id="on-copy" type="button">Copy link</button>
+        </div>
+        <div class="on-wait"><span class="dot"></span> Waiting for your friend to join…</div>
+      </div>
+      <div id="on-connecting" class="on-panel hidden">
+        <div class="on-wait"><span class="dot"></span> <span id="on-connecting-text">Connecting…</span></div>
+      </div>
+      <div id="on-error" class="on-panel hidden">
+        <div class="on-label">COULDN'T CONNECT</div>
+        <p id="on-error-text"></p>
+      </div>
+      <button id="on-back" class="on-back" type="button">BACK</button>
+    </div>
+
+    <!-- Character select (fighting-game style): fighters left/right, name plates in the
+         corners, portrait grid with 1P / CPU cursors in the middle. -->
+    <div id="select" class="screen hidden">
+      <h1>SELECT YOUR FIGHTER</h1>
+      <div class="sel-vs">VS</div>
+
+      <button id="plate-p1" class="plate p1" type="button" aria-label="Choose your fighter">
+        <span class="plate-tag">1P · YOU</span>
+        <span class="plate-name"></span>
+        <span class="plate-party"></span>
+        <span class="plate-super"></span>
+        <span class="plate-desc"></span>
+      </button>
+      <button id="plate-p2" class="plate p2" type="button" aria-label="Choose the opponent">
+        <span class="plate-tag">CPU</span>
+        <span class="plate-name"></span>
+        <span class="plate-party"></span>
+        <span class="plate-super"></span>
+        <span class="plate-desc"></span>
+      </button>
+
+      <div class="sel-center">
+        <div id="pick-prompt" class="pick-prompt">PICK YOUR FIGHTER</div>
+        <div id="neta-download" class="neta-download hidden">
+          <div class="dl-info">
+            <span id="dl-title">DOWNLOADING NETA…</span>
+            <span id="dl-pct">0%</span>
+          </div>
+          <div class="dl-track"><div id="dl-fill" class="dl-fill"></div></div>
+        </div>
+        <div id="bapu-quest" class="hidden"></div>
+        <div id="tiles" class="grid">
+          <button class="tile" type="button" data-tile="modi" style="--accent: #ff9933">
+            <img data-portrait="modi" src="/faces/modi.png?v=20261101_smooth" alt="MitraMan" />
+            <span class="tile-name">MITRAMAN</span>
+            <i class="cur p1">1P</i><i class="cur p2">CPU</i>
+          </button>
+          <button class="tile" type="button" data-tile="rahul" style="--accent: #2e9bff">
+            <img data-portrait="rahul" src="/faces/rahul.png?v=20261101_smooth" alt="Yatra Boy" />
+            <span class="tile-name">YATRA BOY</span>
+            <i class="cur p1">1P</i><i class="cur p2">CPU</i>
+          </button>
+          <button class="tile" type="button" data-tile="didi" style="--accent: #22b35e">
+            <img data-portrait="didi" src="/faces/didi.png?v=20261101_smooth" alt="Deedee" />
+            <span class="tile-name">DEEDEE</span>
+            <i class="cur p1">1P</i><i class="cur p2">CPU</i>
+          </button>
+          <button class="tile" type="button" data-tile="trump" style="--accent: #e0262f">
+            <img data-portrait="trump" src="/faces/trump.png?v=20261101_smooth" alt="Tariff Taau" />
+            <span class="tile-name">TARIFF TAAU</span>
+            <i class="cur p1">1P</i><i class="cur p2">CPU</i>
+          </button>
+          <button class="tile" type="button" data-tile="yogi" style="--accent: #f05a00">
+            <img data-portrait="yogi" src="/faces/yogi.png?v=20261101_smooth" alt="Dozer Dada" />
+            <span class="tile-name">DOZER DADA</span>
+            <i class="cur p1">1P</i><i class="cur p2">CPU</i>
+          </button>
+          <button class="tile" type="button" data-tile="nitin" style="--accent: #ff9a1f">
+            <img data-portrait="nitin" src="/faces/nitin.png?v=20261101_smooth" alt="Toll Man" />
+            <span class="tile-name">TOLL MAN</span>
+            <i class="cur p1">1P</i><i class="cur p2">CPU</i>
+          </button>
+          <button class="tile boss" type="button" data-tile="mbapu" style="--accent: #ffd700">
+            <span class="boss-tag">BOSS</span>
+            <span class="lock-mark" aria-hidden="true">
+              <svg viewBox="0 0 64 80">
+                <path class="sil" d="M32 12c-10 0-17 8-17 19 0 8 4 15 9 18v5C14 57 5 63 3 80h58c-2-17-11-23-21-26v-5c5-3 9-10 9-18 0-11-7-19-17-19z" />
+                <g class="specs"><circle cx="24" cy="31" r="6.2" /><circle cx="40" cy="31" r="6.2" /><path d="M30.2 30.6c1.2-1.3 2.4-1.3 3.6 0M17.8 30l-3.3-1.4M46.2 30l3.3-1.4" /></g>
+              </svg>
+              <b>?</b>
+            </span>
+            <img data-portrait="mbapu" src="/faces/mbapu.png?v=20261101_smooth" alt="Mbapu" />
+            <span class="tile-name">MBAPU</span>
+            <i class="cur p2">BOSS</i>
+          </button>
+          <button class="tile random" type="button" data-tile="random" style="--accent: #ffe3a0">
+            <span class="tile-q">?</span>
+            <span class="tile-name">RANDOM</span>
+          </button>
+        </div>
+        <div class="options">
+          <div class="difficulty stage-pick">
+            <span>STAGE</span>
+            <button data-stage="sansad">SANSAD</button>
+            <button data-stage="jantar">JANTAR MANTAR</button>
+            <button data-stage="road">DESI SADAK</button>
+          </div>
+          <div class="difficulty cpu-level">
+            <span>CPU</span>
+            <button data-diff="easy">EASY</button>
+            <button data-diff="normal">NORMAL</button>
+            <button data-diff="hard">HARD</button>
+          </div>
+        </div>
+        <div class="sel-actions">
+          <button id="online-btn" class="online-btn" type="button">🌐 PLAY WITH A FRIEND</button>
+          <button id="fight-btn" class="big">FIGHT!</button>
+        </div>
+        <div id="online-bar" class="online-bar">
+          <span id="online-status"></span>
+          <button id="online-leave" type="button">LEAVE ROOM</button>
+        </div>
+        <div id="vs-line" class="sr-only" aria-live="polite"></div>
+        <small id="stage-sub" class="sr-only"></small>
+      </div>
+
+      <div class="controls">
+        <b>Pick</b> tap a face (1P, then CPU) · ←/→ you · ↑/↓ CPU &nbsp; <b>Stage</b> T &nbsp; <b>CPU</b> 1/2/3 &nbsp; <b>Fight</b> Enter<br />
+        <b>Move</b> A/D or ←/→ · <b>Jump</b> W or ↑ · <b>Crouch</b> S or ↓ · <b>Block</b> hold back · <b>Punch</b> J · <b>Kick</b> K · <b>Grab</b> I or J+K · <b>Super</b> L / Space · <b>Pause</b> Esc · <b>Music</b> M · <b>Mute</b> N<br />
+        <b>Specials</b> →J, →K, ↓K sweep · <b>Combos</b> J,J,J · J,J,K · J,K,K · K,K · ↓J,J · ↓J,K
+      </div>
+      <div class="touch-help">
+        <b>Stick</b> move · ↑ jump · ↓ crouch · hold back to block &nbsp;|&nbsp; <b>PUNCH · KICK · GRAB · SUPER</b> (when SHAKTI is full)<br />
+        <b>Specials</b> →PUNCH · →KICK · ↓KICK sweep &nbsp;|&nbsp; <b>Combos</b> P,P,P · P,P,K · P,K,K · K,K
+      </div>
+    </div>
+
+    <!-- Online: friend away / link unstable -->
+    <div id="net-away" class="hidden">
+      <div class="net-away-msg"><div class="dot"></div><span>Waiting for your friend…</span></div>
+      <button id="net-away-leave" type="button">LEAVE ROOM</button>
+    </div>
+    <div id="net-badge" class="hidden"></div>
+
+    <div id="pause" class="screen hidden">
+      <h1>CHAI BREAK ☕</h1>
+      <p class="pause-sub">Sansad adjourned till further notice.</p>
+      <button id="resume-btn" class="big">RESUME</button>
+      <button id="pause-sound-btn">SOUND: ON</button>
+      <button id="quit-btn">QUIT TO SELECT</button>
+    </div>
+
+    <div id="result" class="screen hidden">
+      <div class="paper">
+        <div id="paper-masthead" class="masthead">THE DAILY JUMLA</div>
+        <div id="paper-date" class="dateline"></div>
+        <div id="paper-headline" class="headline"></div>
+        <div class="paper-body">
+          <figure><img id="paper-photo" alt="" /><figcaption id="paper-caption"></figcaption></figure>
+          <div class="cols">
+            <p id="paper-sub" class="paper-sub"></p>
+            <p id="paper-excuse" class="excuse"></p>
+            <p class="filler">Sources say the chai bhaiya in the stands has demanded compensation for broken cups. A stray cow that halted the fight was later seen eating a placard. Exit polls, as usual, were wrong.</p>
+          </div>
+        </div>
+        <div id="result-title" class="stamp">YOU WIN!</div>
+      </div>
+      <p id="result-sub"></p>
+      <div id="bapu-stats" class="hidden"></div>
+      <div class="result-buttons">
+        <button id="rematch-btn" class="big">REMATCH</button>
+        <button id="select-btn">CHARACTER SELECT</button>
+      </div>
+    </div>
+
+    <button id="sound-btn" aria-label="Mute sound">🔊</button>
+
+    <!-- Opening notice: shown once per device, above everything else (see src/legal.ts). -->
+    <div id="legal" role="alertdialog" aria-modal="true" aria-labelledby="legal-title">
+      <div class="legal-card">
+        <h2 id="legal-title">SATIRE NOTICE · व्यंग्य सूचना</h2>
+        <div class="legal-scroll" tabindex="0">
+          <p class="legal-hi">यह एक व्यंग्यात्मक खेल है। इसमें दिखाए गए पात्र, संवाद और घटनाएं मनोरंजन, हास्य और सामाजिक टिप्पणी के उद्देश्य से काल्पनिक एवं अतिरंजित रूप में प्रस्तुत किए गए हैं। इन्हें वास्तविक घटनाओं या तथ्यों के रूप में न लें।</p>
+          <p>COLLEGE HOOD is a political satire and parody game created for entertainment, humour and social commentary. It is intended as an expression of creative freedom under Article 19(1)(a) of the Constitution of India, subject to applicable laws.</p>
+          <ul>
+            <li>All fictional dialogues, scenarios and headlines are satirical interpretations. They are not intended to represent factual statements or allegations.</li>
+            <li>This game is independently created and is not affiliated with, endorsed, sponsored by or connected to any political leader, political party, government body or news organisation.</li>
+            <li>The game does not intend to promote hatred, discriminate against any religion or community, or influence any election.</li>
+            <li>The game contains fictional cartoon-style fighting and exaggerated violence. Please do not imitate it in real life.</li>
+            <li>Any resemblance to real persons or events is used in a satirical context and should not be interpreted as a factual representation.</li>
+          </ul>
+          <p class="legal-agree">By continuing, you acknowledge that this is a work of political satire and parody.</p>
+          <hr />
+          <h3>व्यंग्य सूचना</h3>
+          <p>यह खेल मनोरंजन और सामाजिक टिप्पणी के उद्देश्य से बनाया गया एक राजनीतिक व्यंग्य और पैरोडी है। इसमें दिखाए गए संवाद, परिस्थितियां और घटनाएं काल्पनिक एवं अतिरंजित हैं।</p>
+          <p>सभी पात्रों के चित्रण और संवाद व्यंग्यात्मक हैं। इन्हें वास्तविक तथ्य या आरोप न समझें। यह खेल किसी राजनीतिक दल, नेता या सरकारी संस्था से संबद्ध नहीं है।</p>
+          <p>इस खेल का उद्देश्य किसी भी प्रकार की नफरत फैलाना, किसी धर्म या समुदाय के साथ भेदभाव करना या किसी चुनाव को प्रभावित करना नहीं है।</p>
+          <p>इसमें काल्पनिक कार्टून हिंसा और अतिरंजित लड़ाई दिखाई गई है। कृपया इसकी नकल वास्तविक जीवन में न करें।</p>
+          <p>वास्तविक व्यक्तियों या घटनाओं से कोई भी समानता व्यंग्य के संदर्भ में है और इसे वास्तविक तथ्यों के रूप में न समझें।</p>
+          <p class="legal-agree">आगे बढ़ने का अर्थ है कि आप समझते हैं कि यह एक व्यंग्यात्मक खेल है।</p>
+        </div>
+        <button id="legal-ok" type="button" disabled>SCROLL DOWN TO CONTINUE ↓</button>
+      </div>
+    </div>
+
+  </body>
+</html>
